@@ -15,7 +15,10 @@ export default class App extends Component {
   render() {
     const { welcome, users } = this.state;
     return (
-      <Header text="Sudoku" />
+      <>
+        <Header text="Sudoku" />
+        <GameBoard />
+      </>
     );
   }
 }
