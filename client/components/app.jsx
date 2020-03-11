@@ -18,7 +18,7 @@ export default class App extends Component {
   render() {
     const { welcome, users } = this.state;
     return (
-      <div className="container">
+      <div className="container-fluid">
         <div className="row">
           <div className="col">
             <Header text="Sudoku" />
