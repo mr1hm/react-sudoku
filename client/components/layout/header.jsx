@@ -17,17 +17,12 @@ export default class Header extends Component {
     return (
       <>
         <CssBaseline />
-        <Container maxWidth="xl">
-          <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '100vh' }} />
+        <Container className="header-container" maxWidth="xl">
+          <Typography component="h2" variant="h1">
+            Sudoku
+          </Typography>
         </Container>
       </>
-      // <div className="container-fluid">
-      //   <div className="row">
-      //     <div className="col d-flex justify-content-center">
-      //       <div className="header-title">{text}</div>
-      //     </div>
-      //   </div>
-      // </div>
     );
   }
 }
