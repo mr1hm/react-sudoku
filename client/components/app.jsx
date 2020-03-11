@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import Header from './layout/header';
+import GameBoard from './game-board';
 
 export default class App extends Component {
   constructor(props) {
