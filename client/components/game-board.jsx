@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-// import CssBaseline from '@material-ui/core/CssBaseline';
-// import Container from '@material-ui/core/Container';
-// import div from '@material-ui/core/div';
-// import div from '@material-ui/core/div';
+import InputSelection from './input-selection';
 
 const MakeBoard = () => {
-  let block = {};
-  for (let i = 1; i <= 9; i++) {
-    block[i] = { row: ['1', '2', '3', '4', '5', '6', '7', '8', '9'], col: ['1', '2', '3', '4', '5', '6', '7', '8', '9'] }
+  let block = [];
+  for (let i = 0; i < 9; i++) {
+    block.push(['', '', '', '', '', '', '', '', ''])
   }
   return block;
 }
