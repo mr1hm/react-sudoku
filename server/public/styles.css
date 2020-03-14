@@ -21,12 +21,18 @@ body {
   border: 1px solid black;
 }
 
-.input-block {
+.cell {
   border: 1px solid black;
   height: 60px;
 }
 
-.paper {
-  text-align: center;
-  box-shadow: none!important;
+.selected {
+  background-color: rgba(141, 197, 243, 0.6);
+}
+
+.value {
+  height: 60px;
+  font-size: 20px;
+  border: 1px solid black;
+  cursor: pointer;
 }
