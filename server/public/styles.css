@@ -6,7 +6,8 @@ body {
   background-color: rgb(199, 197, 197);
 }
 
-.game-container {
+.game-container,
+.input-container {
   margin-top: 20px;
   border: 1px solid black;
   width: 800px;
