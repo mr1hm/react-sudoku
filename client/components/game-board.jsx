@@ -20,26 +20,49 @@ export default class GameBoard extends Component {
       blockSelection: null,
       valueSelected: '',
       inputValues: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-      inputClicked: false,
+      inputSelected: {
+        1: false,
+        2: false,
+        3: false,
+        4: false,
+        5: false,
+        6: false,
+        7: false,
+        8: false,
+        9: false
+      }
     }
     this.handleCellSelect = this.handleCellSelect.bind(this);
     this.handleBlockSelect = this.handleBlockSelect.bind(this);
     this.changeSelectionValue = this.changeSelectionValue.bind(this);
     this.handleValueSelection = this.handleValueSelection.bind(this);
+    this.clearValueSelected = this.clearValueSelected.bind(this);
+    this.handleInputSelected = this.handleInputSelected.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.valueSelected !== this.state.valueSelected) this.setState({ valueSelected: this.state.valueSelected })
+    if (prevState.valueSelected === this.state.valueSelected) this.setState({ valueSelected: '' })
   }
 
   handleBlockSelect(e) {
     const blockSelection = e.currentTarget.getAttribute('data-block');
-    this.setState({ blockSelection })
+    this.setState({ blockSelection: +blockSelection })
   }
 
-  handleCellSelect(e) {
-    const cellSelection = e.currentTarget.getAttribute('data-cell');
-    this.setState({ cellSelection }, this.changeSelectionValue)
+  handleCellSelect(cellIndex) {
+    this.setState({ cellSelection: cellIndex }, this.changeSelectionValue)
+  }
+
+  handleInputSelected(e) {
+    const { inputSelected } = this.state;
+    const value = e.currentTarget.getAttribute('data-cell');
+    for (const key in inputSelected) {
+      console.log(inputSelected);
+      if (key !== value) {
+        if (inputSelected[key] === true) this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [key]: false } }))
+      }
+    }
+    this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [value]: !inputSelected[value] } }), this.handleValueSelection(value))
   }
 
   changeSelectionValue() {
