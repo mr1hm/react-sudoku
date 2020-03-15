@@ -15,7 +15,6 @@ export default class GameBoard extends Component {
     super(props);
     this.state = {
       gameBoard: MakeBoard(),
-      cellSelected: false,
       cellSelection: null,
       blockSelection: null,
       valueSelected: '',
