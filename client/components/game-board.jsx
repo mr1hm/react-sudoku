@@ -5,9 +5,29 @@ import InputSelection from './input-selection';
 const MakeBoard = () => {
   let block = [];
   for (let i = 0; i < 9; i++) {
-    block.push(['', '', '', '', '', '', '', '', ''])
+    if (i === 0) block.push(shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+    else block.push(['', '', '', '', '', '', '', '', ''])
+    // shuffle(block[i]);
   }
   return block;
+}
+
+const shuffle = arr => {
+  let tmp, current, top = arr.length;
+  if (top) while (--top) {
+    current = Math.floor(Math.random() * (top + 1));
+    tmp = arr[current];
+    arr[current] = arr[top]
+    arr[top] = tmp;
+  }
+  console.log(arr);
+  return arr;
+}
+
+const MakeSolution = () => {
+  const solution = [
+    [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  ];
 }
 
 export default class GameBoard extends Component {
