@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import Header from './layout/header';
+import Footer from './layout/footer';
 import GameBoard from './game-board';
 import InputSelection from './input-selection';
 
@@ -19,6 +20,7 @@ export default class App extends Component {
       <>
         <Header text="Sudoku" />
         <GameBoard />
+        <Footer text="Footer" />
       </>
     );
   }

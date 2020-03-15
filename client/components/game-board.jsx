@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import GameBoardCells from './gameBoardCells';
 import InputSelection from './input-selection';
 
 const MakeBoard = () => {
@@ -19,26 +20,49 @@ export default class GameBoard extends Component {
       blockSelection: null,
       valueSelected: '',
       inputValues: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-      inputClicked: false,
+      inputSelected: {
+        1: false,
+        2: false,
+        3: false,
+        4: false,
+        5: false,
+        6: false,
+        7: false,
+        8: false,
+        9: false
+      }
     }
     this.handleCellSelect = this.handleCellSelect.bind(this);
     this.handleBlockSelect = this.handleBlockSelect.bind(this);
     this.changeSelectionValue = this.changeSelectionValue.bind(this);
     this.handleValueSelection = this.handleValueSelection.bind(this);
+    this.clearValueSelected = this.clearValueSelected.bind(this);
+    this.handleInputSelected = this.handleInputSelected.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.valueSelected !== this.state.valueSelected) this.setState({ valueSelected: this.state.valueSelected })
+    if (prevState.valueSelected === this.state.valueSelected) this.setState({ valueSelected: '' })
   }
 
   handleBlockSelect(e) {
     const blockSelection = e.currentTarget.getAttribute('data-block');
-    this.setState({ blockSelection })
+    this.setState({ blockSelection: +blockSelection })
   }
 
-  handleCellSelect(e) {
-    const cellSelection = e.currentTarget.getAttribute('data-cell');
-    this.setState({ cellSelection }, this.changeSelectionValue)
+  handleCellSelect(cellIndex) {
+    this.setState({ cellSelection: cellIndex }, this.changeSelectionValue)
+  }
+
+  handleInputSelected(e) {
+    const { inputSelected } = this.state;
+    const value = e.currentTarget.getAttribute('data-cell');
+    for (const key in inputSelected) {
+      console.log(inputSelected);
+      if (key !== value) {
+        if (inputSelected[key] === true) this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [key]: false } }))
+      }
+    }
+    this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [value]: !inputSelected[value] } }), this.handleValueSelection(value))
   }
 
   changeSelectionValue() {
@@ -46,18 +70,20 @@ export default class GameBoard extends Component {
     if (blockSelection && cellSelection) {
       const gameBoard = this.state.gameBoard.slice();
       gameBoard[blockSelection][cellSelection] = valueSelected;
-      this.setState({ gameBoard, valueSelected: '' })
+      this.setState({ gameBoard, valueCellSelected: !this.state.valueCellSelected, valueSelected: '' })
     }
   }
 
-  handleValueSelection(e, value) {
-    if (!value) this.setState({ cellSelected: !this.state.cellSelected })
-    if (value !== this.state.valueSelected) this.setState({ valueSelected: value })
-    else this.setState({ valueSelected: value, cellSelected: !this.state.cellSelected })
+  handleValueSelection(value, deselect) {
+    this.setState({ valueSelected: value })
+  }
+
+  clearValueSelected() {
+    this.setState({ valueSelected: '' });
   }
 
   render() {
-    const { selected, gameBoard, inputValues, cellSelected } = this.state;
+    const { gameBoard, inputValues, cellSelected, inputSelected } = this.state;
     return (
       <>
         <main className="game-container container">
@@ -68,7 +94,7 @@ export default class GameBoard extends Component {
                   <div className="row">
                     {val.map((num, cellIndex) => {
                       return (
-                        <div data-cell={cellIndex} key={cellIndex} onClick={this.handleCellSelect} id={`cell-${cellIndex}`} className={`cell col-4 ${cellSelected ? 'selected' : ''}`}>{num}</div>
+                        <GameBoardCells key={`b${blockIndex}-c${cellIndex}`} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
                       );
                     })}
                   </div>
@@ -81,7 +107,7 @@ export default class GameBoard extends Component {
           <section className="input-values row">
             {inputValues.map((val, i) => {
               return (
-                <InputSelection key={i + 1} handleValueSelection={this.handleValueSelection} value={val} selected={selected} />
+                <InputSelection key={i + 1} inputSelected={inputSelected} handleInputSelected={this.handleInputSelected} clearValueSelected={this.clearValueSelected} handleValueSelection={this.handleValueSelection} value={val} />
               );
             })}
           </section>
