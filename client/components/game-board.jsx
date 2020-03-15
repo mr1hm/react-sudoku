@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import GameBoardCells from './gameBoardCells';
 import InputSelection from './input-selection';
 
 const MakeBoard = () => {
