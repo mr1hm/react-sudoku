@@ -94,7 +94,7 @@ export default class GameBoard extends Component {
                   <div className="row">
                     {val.map((num, cellIndex) => {
                       return (
-                        <div data-cell={cellIndex} key={cellIndex} onClick={this.handleCellSelect} id={`cell-${cellIndex}`} className={`cell col-4 ${cellSelected ? 'selected' : ''}`}>{num}</div>
+                        <GameBoardCells key={`b${blockIndex}-c${cellIndex}`} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
                       );
                     })}
                   </div>
@@ -107,7 +107,7 @@ export default class GameBoard extends Component {
           <section className="input-values row">
             {inputValues.map((val, i) => {
               return (
-                <InputSelection key={i + 1} handleValueSelection={this.handleValueSelection} value={val} selected={selected} />
+                <InputSelection key={i + 1} inputSelected={inputSelected} handleInputSelected={this.handleInputSelected} clearValueSelected={this.clearValueSelected} handleValueSelection={this.handleValueSelection} value={val} />
               );
             })}
           </section>
