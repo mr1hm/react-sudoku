@@ -20,6 +20,7 @@ export default class App extends Component {
       <>
         <Header text="Sudoku" />
         <GameBoard />
+        <Footer text="Footer" />
       </>
     );
   }
