@@ -39,42 +39,42 @@ export default class GameBoard extends Component {
     this.handleInputSelected = this.handleInputSelected.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.valueSelected === this.state.valueSelected) this.setState({ valueSelected: '' })
-  }
-
   handleBlockSelect(e) {
     const blockSelection = e.currentTarget.getAttribute('data-block');
     this.setState({ blockSelection: +blockSelection })
   }
 
   handleCellSelect(cellIndex) {
-    this.setState({ cellSelection: cellIndex }, this.changeSelectionValue)
+    this.setState({ cellSelection: +cellIndex }, this.changeSelectionValue)
   }
 
   handleInputSelected(e) {
-    const { inputSelected } = this.state;
+    const { inputSelected, valueSelected } = this.state;
     const value = e.currentTarget.getAttribute('data-cell');
-    for (const key in inputSelected) {
-      console.log(inputSelected);
-      if (key !== value) {
-        if (inputSelected[key] === true) this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [key]: false } }))
+    if (value !== valueSelected) {
+      for (const key in inputSelected) {
+        if (key !== value) {
+          if (inputSelected[key] === true) this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [key]: false } }))
+        }
       }
     }
     this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [value]: !inputSelected[value] } }), this.handleValueSelection(value))
   }
 
   changeSelectionValue() {
-    const { blockSelection, cellSelection, valueSelected } = this.state;
-    if (blockSelection && cellSelection) {
-      const gameBoard = this.state.gameBoard.slice();
-      gameBoard[blockSelection][cellSelection] = valueSelected;
-      this.setState({ gameBoard, valueCellSelected: !this.state.valueCellSelected, valueSelected: '' })
-    }
+    const { blockSelection, cellSelection, valueSelected, inputSelected } = this.state;
+    const gameBoard = this.state.gameBoard.slice();
+    gameBoard[blockSelection][cellSelection] = valueSelected;
+    this.setState(prevState => ({ gameBoard, valueSelected: '' }), () => {
+      for (const key in inputSelected) {
+        if (inputSelected[key]) this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [key]: false } }))
+      }
+    })
   }
 
-  handleValueSelection(value, deselect) {
-    this.setState({ valueSelected: value })
+  handleValueSelection(value) {
+    if (this.state.valueSelected === value) this.setState({ valueSelected: '' })
+    else this.setState({ valueSelected: value })
   }
 
   clearValueSelected() {
