@@ -70,18 +70,20 @@ export default class GameBoard extends Component {
     if (blockSelection && cellSelection) {
       const gameBoard = this.state.gameBoard.slice();
       gameBoard[blockSelection][cellSelection] = valueSelected;
-      this.setState({ gameBoard, valueSelected: '' })
+      this.setState({ gameBoard, valueCellSelected: !this.state.valueCellSelected, valueSelected: '' })
     }
   }
 
-  handleValueSelection(e, value) {
-    if (!value) this.setState({ cellSelected: !this.state.cellSelected })
-    if (value !== this.state.valueSelected) this.setState({ valueSelected: value })
-    else this.setState({ valueSelected: value, cellSelected: !this.state.cellSelected })
+  handleValueSelection(value, deselect) {
+    this.setState({ valueSelected: value })
+  }
+
+  clearValueSelected() {
+    this.setState({ valueSelected: '' });
   }
 
   render() {
-    const { selected, gameBoard, inputValues, cellSelected } = this.state;
+    const { gameBoard, inputValues, cellSelected, inputSelected } = this.state;
     return (
       <>
         <main className="game-container container">
