@@ -11,7 +11,7 @@ export default class GameBoardCells extends Component {
   render() {
     const { handleCellSelect, cellIndex, num, cellSelected } = this.props;
     return (
-      <div onClick={() => handleCellSelect(cellIndex)} id={`cell-${cellIndex}`} className={`cell col-4 ${cellSelected ? 'selected' : ''}`}>{num}</div>
+      <div onClick={() => handleCellSelect(cellIndex)} id={`cell-${cellIndex}`} className={`cell col ${cellSelected ? 'selected' : ''}`}>{num}</div>
     );
   }
 }
