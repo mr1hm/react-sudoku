@@ -32,6 +32,99 @@ export default class GameBoard extends Component {
     this.handleValueSelection = this.handleValueSelection.bind(this);
     this.clearValueSelected = this.clearValueSelected.bind(this);
     this.handleInputSelected = this.handleInputSelected.bind(this);
+    // this.setBoard = this.setBoard.bind(this);
+  }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (prevState.gameBoard !== this.props.gameBoard) {
+  //     this.setState({ gameBoard: this.props.gameBoard })
+  //   }
+  // }
+
+  componentDidMount() { // Create Random Solution
+    let board = [], solution = [], possibleValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    for (let i = 0; i < 9; i++) {
+      board.push(this.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+    }
+    let randomBoard = board.slice();
+    let original = randomBoard.slice();
+    for (let j = 0; j < original.length; j++) {
+      solution.push(original[j].splice(0, 3))
+      solution.push(original[j].splice(0, 3))
+      solution.push(original[j].splice(0, 3))
+    }
+    console.log(possibleValues)
+    this.setState({ solution })
+    let finalSolution = solution.slice();
+    console.log(finalSolution)
+    console.log(solution)
+    let wholeRow = [];
+    for (let rowIndex = 0; rowIndex < finalSolution.length; rowIndex++) {
+      let currentRowIndex = rowIndex;
+      const entireRows = [].concat(finalSolution[rowIndex]).concat(finalSolution[rowIndex + 3]).concat(finalSolution[rowIndex + 6]);
+      wholeRow.push(entireRows);
+      if (rowIndex === 2) rowIndex += 6;
+      if (rowIndex === 11) rowIndex += 6
+      if (rowIndex === 20) {
+        this.setState({ entireRows: wholeRow, gameBoard: wholeRow })
+        break;
+      }
+    }
+    let condensed = [];
+    for (let z = 0; z < wholeRow.length; z + 3) {
+      const reduce = [].concat(wholeRow[z]).concat(wholeRow[z + 1]).concat(wholeRow[z + 2])
+      condensed.push(reduce);
+      console.log(condensed); // INFINITE LOOP HERE. BE CAREFUL
+      if (z === 6) break;
+    }
+    this.setState({ condensed })
+    console.log(wholeRow);
+    // console.log(rowIndex)
+    // for (let rowValueIndex = 0; rowValueIndex < finalSolution[rowIndex].length; rowValueIndex++) {
+    //   if (!finalSolution[rowIndex + 3] || !finalSolution[rowIndex + 3][rowValueIndex]) {
+    //     // debugger;
+    //     this.setState({ gameBoard: solution })
+    //   }
+    //   if (finalSolution[rowIndex + 1]) { // Check for same values in the same block row.
+    //     if (finalSolution[rowIndex][rowValueIndex] === finalSolution[rowIndex + 1][rowValueIndex]) {
+    //       let possible = possibleValues.filter(val => val !== finalSolution[rowIndex + 1][rowValueIndex]);
+    //       finalSolution[rowIndex + 1][rowValueIndex] = possible[Math.floor(Math.random() * possible.length)];
+    //     }
+    //   }
+    //   if (finalSolution[rowIndex + 2]) {
+    //     if (finalSolution[rowIndex][rowValueIndex] === finalSolution[rowIndex + 2][rowValueIndex]) {
+    //       let possible = possibleValues.filter(val => val !== finalSolution[rowIndex + 2][rowValueIndex]);
+    //       finalSolution[rowIndex + 2][rowValueIndex] = possible[Math.floor(Math.random() * possible.length)];
+    //     }
+    //   }
+    //   if (rowIndex === 0) { // Check for same values in across the entire row.
+    //     if (finalSolution[rowIndex][rowValueIndex] === finalSolution[rowIndex + 2][rowValueIndex]) {
+    //       let possible = possibleValues.filter(val => val !== finalSolution[rowIndex][rowValueIndex] && val !== finalSolution[rowIndex][rowValueIndex + 1] && val !== finalSolution[rowIndex][rowValueIndex + 2])
+    //       console.log(possible);
+    //       finalSolution[rowIndex + 2][rowValueIndex] = possible[Math.floor(Math.random() * possible.length)];
+    //       console.log(finalSolution)
+    //     }
+    //   }
+    //   if (finalSolution[rowIndex + 3]) {
+    //     if (finalSolution[rowIndex][rowValueIndex] === finalSolution[rowIndex + 3][rowValueIndex]) {
+    //       // debugger;
+    //       let possible = possibleValues.filter(val => val !== finalSolution[rowIndex][rowValueIndex] && val !== finalSolution[rowIndex][rowValueIndex + 1] && val !== finalSolution[rowIndex][rowValueIndex + 2])
+    //       console.log(possible);
+    //       finalSolution[rowIndex + 2][rowValueIndex] = possible[Math.floor(Math.random() * possible.length)];
+    //     }
+    //   }
+    // }
+  }
+
+  shuffle(arr) {
+    let tmp, current, top = arr.length;
+    if (top) while (--top) {
+      current = Math.floor(Math.random() * (top + 1));
+      tmp = arr[current];
+      arr[current] = arr[top]
+      arr[top] = tmp;
+    }
+    return arr;
   }
 
   handleBlockSelect(e) {
