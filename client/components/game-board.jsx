@@ -173,8 +173,8 @@ export default class GameBoard extends Component {
           <section className="game-board row">
             {gameBoard.map((val, blockIndex) => {
               return (
-                <div onClick={this.handleBlockSelect} data-block={blockIndex} id={`block-${blockIndex}`} key={blockIndex} className="game-block col-4">
-                  <div className="row">
+                <div onClick={this.handleBlockSelect} data-block={blockIndex} id={`block-${blockIndex}`} key={blockIndex} className="game-block col-12">
+                  <div className="row board-row">
                     {val.map((num, cellIndex) => {
                       return (
                         <GameBoardCells key={`b${blockIndex}-c${cellIndex}`} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
