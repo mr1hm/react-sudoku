@@ -32,89 +32,85 @@ export default class GameBoard extends Component {
     this.handleValueSelection = this.handleValueSelection.bind(this);
     this.clearValueSelected = this.clearValueSelected.bind(this);
     this.handleInputSelected = this.handleInputSelected.bind(this);
-    // this.setBoard = this.setBoard.bind(this);
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevState.gameBoard !== this.props.gameBoard) {
-  //     this.setState({ gameBoard: this.props.gameBoard })
-  //   }
-  // }
-
   componentDidMount() { // Create Random Solution
-    let board = [], solution = [], possibleValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let board = [], solution = [], possibleValues = [1, 2, 3, 4, 5, 6, 7, 8, 9], randomBoard;
     for (let i = 0; i < 9; i++) {
       board.push(this.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]))
     }
-    let randomBoard = board.slice();
-    let original = randomBoard.slice();
-    for (let j = 0; j < original.length; j++) {
-      solution.push(original[j].splice(0, 3))
-      solution.push(original[j].splice(0, 3))
-      solution.push(original[j].splice(0, 3))
-    }
-    console.log(possibleValues)
+    solution = board.slice();
     this.setState({ solution })
     let finalSolution = solution.slice();
-    console.log(finalSolution)
-    console.log(solution)
+    console.log('rows', finalSolution)
+    // Check Columns
+    let temp = [];
+    let col = [];
+    let count = 0;
+    while (count < 9) {
+      temp = [];
+      for (let colIndex = 0; colIndex < finalSolution.length; colIndex++) {
+        temp.push(finalSolution[colIndex][count]);
+      }
+      col.push(temp);
+      count++;
+    }
+    console.log('columns', col);
     let wholeRow = [];
     for (let rowIndex = 0; rowIndex < finalSolution.length; rowIndex++) {
-      let currentRowIndex = rowIndex;
-      const entireRows = [].concat(finalSolution[rowIndex]).concat(finalSolution[rowIndex + 3]).concat(finalSolution[rowIndex + 6]);
-      wholeRow.push(entireRows);
-      if (rowIndex === 2) rowIndex += 6;
-      if (rowIndex === 11) rowIndex += 6
-      if (rowIndex === 20) {
-        this.setState({ entireRows: wholeRow, gameBoard: wholeRow })
-        break;
+      wholeRow.push(finalSolution[rowIndex]);
+    }
+    if (this.validateSolution(wholeRow)) {
+      this.setState({ entireRows: wholeRow, gameBoard: wholeRow })
+    }
+    this.setState({ entireRows: wholeRow, gameBoard: wholeRow }) // GET RID OF THIS ONCE IT WORKS
+  }
+
+  validateSolution(solution) {
+    function check(arr) {
+      return arr.sort().filter((val, index) => val === index + 1).length === 9;
+    }
+
+    for (let i = 0; i < 9; i++) {
+      var col = [];
+      var row = [];
+      var square = [];
+      for (var j = 0; j < 9; j++) {
+        col.push(solution[j][i]);
+        row.push(solution[i][j]);
+        square.push(solution[Math.floor(j / 3) + (i % 3) * 3][j % 3 + Math.floor(i / 3) * 3]);
+      }
+      if (!check(col) || !check(row) || !check(square)) {
+        console.log('nope')
+        return false;
       }
     }
-    let condensed = [];
-    for (let z = 0; z < wholeRow.length; z + 3) {
-      const reduce = [].concat(wholeRow[z]).concat(wholeRow[z + 1]).concat(wholeRow[z + 2])
-      condensed.push(reduce);
-      console.log(condensed); // INFINITE LOOP HERE. BE CAREFUL
-      if (z === 6) break;
-    }
-    this.setState({ condensed })
-    console.log(wholeRow);
-    // console.log(rowIndex)
-    // for (let rowValueIndex = 0; rowValueIndex < finalSolution[rowIndex].length; rowValueIndex++) {
-    //   if (!finalSolution[rowIndex + 3] || !finalSolution[rowIndex + 3][rowValueIndex]) {
-    //     // debugger;
-    //     this.setState({ gameBoard: solution })
-    //   }
-    //   if (finalSolution[rowIndex + 1]) { // Check for same values in the same block row.
-    //     if (finalSolution[rowIndex][rowValueIndex] === finalSolution[rowIndex + 1][rowValueIndex]) {
-    //       let possible = possibleValues.filter(val => val !== finalSolution[rowIndex + 1][rowValueIndex]);
-    //       finalSolution[rowIndex + 1][rowValueIndex] = possible[Math.floor(Math.random() * possible.length)];
-    //     }
-    //   }
-    //   if (finalSolution[rowIndex + 2]) {
-    //     if (finalSolution[rowIndex][rowValueIndex] === finalSolution[rowIndex + 2][rowValueIndex]) {
-    //       let possible = possibleValues.filter(val => val !== finalSolution[rowIndex + 2][rowValueIndex]);
-    //       finalSolution[rowIndex + 2][rowValueIndex] = possible[Math.floor(Math.random() * possible.length)];
-    //     }
-    //   }
-    //   if (rowIndex === 0) { // Check for same values in across the entire row.
-    //     if (finalSolution[rowIndex][rowValueIndex] === finalSolution[rowIndex + 2][rowValueIndex]) {
-    //       let possible = possibleValues.filter(val => val !== finalSolution[rowIndex][rowValueIndex] && val !== finalSolution[rowIndex][rowValueIndex + 1] && val !== finalSolution[rowIndex][rowValueIndex + 2])
-    //       console.log(possible);
-    //       finalSolution[rowIndex + 2][rowValueIndex] = possible[Math.floor(Math.random() * possible.length)];
-    //       console.log(finalSolution)
-    //     }
-    //   }
-    //   if (finalSolution[rowIndex + 3]) {
-    //     if (finalSolution[rowIndex][rowValueIndex] === finalSolution[rowIndex + 3][rowValueIndex]) {
-    //       // debugger;
-    //       let possible = possibleValues.filter(val => val !== finalSolution[rowIndex][rowValueIndex] && val !== finalSolution[rowIndex][rowValueIndex + 1] && val !== finalSolution[rowIndex][rowValueIndex + 2])
-    //       console.log(possible);
-    //       finalSolution[rowIndex + 2][rowValueIndex] = possible[Math.floor(Math.random() * possible.length)];
-    //     }
-    //   }
-    // }
+    console.log('yay')
+    return true;
   }
+
+  // permute(values) {
+  //   const result = [];
+  //   const temp = [];
+  //   this.findPermutations(temp, values, result);
+  //   return result;
+  // }
+
+  // findPermutations(temp, values, result) {
+  //   if (!values.length) {
+  //     result.push(temp.concat());
+  //     return;
+  //   }
+
+  //   for (let i = 0; i < values.length; i++) {
+  //     const newVal = values[i];
+  //     temp.push(newVal);
+  //     values.splice(i, 1);
+  //     this.findPermutations(temp, values, result);
+  //     temp.pop();
+  //     values.splice(i, 0, newVal);
+  //   }
+  // }
 
   shuffle(arr) {
     let tmp, current, top = arr.length;
