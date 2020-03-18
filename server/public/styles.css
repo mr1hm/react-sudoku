@@ -18,13 +18,38 @@ body {
   padding: 20px;
 }
 
+.board-row {
+  border-left: 2px solid black;
+  border-right: 1px solid black;
+}
+
+.game-board .game-block:first-child .board-row {
+  border-top: 2px solid black;
+}
+
+.game-board .game-block:last-child .board-row {
+  border-bottom: 3px solid black;
+}
+
 .game-block {
-  border: 1px solid black;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+#block-2,
+#block-5 {
+  border-bottom: 2px solid black;
 }
 
 .cell {
-  border: 1px solid black;
+  border-right: 1px solid black;
   height: 60px;
+}
+
+#cell-2,
+#cell-5 {
+  border-right: 3px solid black;
 }
 
 .selected {
