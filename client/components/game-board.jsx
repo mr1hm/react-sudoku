@@ -42,6 +42,17 @@ export default class GameBoard extends Component {
     if (this.state.difficulty = 'easy') this.removeRandomNums(solution, 18);
   }
 
+  shuffle(arr) {
+    let tmp, current, top = arr.length;
+    if (top) while (--top) {
+      current = Math.floor(Math.random() * (top + 1));
+      tmp = arr[current];
+      arr[current] = arr[top]
+      arr[top] = tmp;
+    }
+    return arr;
+  }
+
   removeRandomNums(solution, amount) {
     const { difficulty } = this.state;
     let gameBoard = JSON.parse(JSON.stringify(solution))
@@ -55,7 +66,7 @@ export default class GameBoard extends Component {
     this.setState({ gameBoard })
   }
 
-  createSolution(board) {
+  createSolution(shuffledRow) {
     let gameBoard = [
       ['', '', '', '', '', '', '', '', ''],
       ['', '', '', '', '', '', '', '', ''],
@@ -67,13 +78,12 @@ export default class GameBoard extends Component {
       ['', '', '', '', '', '', '', '', ''],
       ['', '', '', '', '', '', '', '', ''],
     ];
-    gameBoard.splice(Math.floor(Math.random() * (0 - 9) + 0), 1, board);
+    gameBoard.splice(Math.floor(Math.random() * (0 - 9) + 0), 1, shuffledRow);
     console.log('gameboard after splice:', gameBoard);
     sudokuSolver(gameBoard);
     return gameBoard;
 
     function isValid(board, row, col, k) {
-      // debugger;
       for (let i = 0; i < 9; i++) {
         const m = 3 * Math.floor(row / 3) + Math.floor(i / 3);
         const n = 3 * Math.floor(col / 3) + i % 3;
