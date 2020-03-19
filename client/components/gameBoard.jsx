@@ -163,7 +163,7 @@ export default class GameBoard extends Component {
     if (gameBoard.length === 0) return <div>LOADING...</div>
     return (
       <>
-        <main className="game-containers container">
+        <main className="game-container container">
           <section className="game-board row">
             {gameBoard.map((val, blockIndex) => {
               return (
