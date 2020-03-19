@@ -161,6 +161,7 @@ export default class GameBoard extends Component {
 
   render() {
     const { gameBoard, inputValues, cellSelected, inputSelected } = this.state;
+    if (gameBoard.length === 0) return <div>LOADING...</div>
     return (
       <>
         <main className="game-container container">
