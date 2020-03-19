@@ -140,9 +140,9 @@ export default class GameBoard extends Component {
   }
 
   changeSelectionValue() {
-    const { blockSelection, cellSelection, valueSelected, inputSelected } = this.state;
+    const { rowSelection, colSelection, valueSelected, inputSelected } = this.state;
     const gameBoard = this.state.gameBoard.slice();
-    gameBoard[blockSelection][cellSelection] = valueSelected;
+    gameBoard[rowSelection][colSelection] = valueSelected;
     this.setState(prevState => ({ gameBoard, valueSelected: '' }), () => {
       for (const key in inputSelected) {
         if (inputSelected[key]) this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [key]: false } }))
