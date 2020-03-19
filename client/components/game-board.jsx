@@ -116,17 +116,6 @@ export default class GameBoard extends Component {
     }
   }
 
-  shuffle(arr) {
-    let tmp, current, top = arr.length;
-    if (top) while (--top) {
-      current = Math.floor(Math.random() * (top + 1));
-      tmp = arr[current];
-      arr[current] = arr[top]
-      arr[top] = tmp;
-    }
-    return arr;
-  }
-
   handleBlockSelect(e) {
     const rowSelection = e.currentTarget.getAttribute('data-block');
     this.setState({ rowSelection: +rowSelection })
