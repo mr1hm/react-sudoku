@@ -7,8 +7,8 @@ export default class GameBoard extends Component {
     super(props);
     this.state = {
       gameBoard: [],
-      cellSelection: null,
-      blockSelection: null,
+      colSelection: null,
+      rowSelection: null,
       valueSelected: '',
       inputValues: [1, 2, 3, 4, 5, 6, 7, 8, 9],
       inputSelected: {
@@ -23,8 +23,8 @@ export default class GameBoard extends Component {
         9: false
       },
       solution: [],
-      entireRows: [],
-      condensed: [],
+      difficulty: 'easy',
+      win: false,
     }
     this.handleCellSelect = this.handleCellSelect.bind(this);
     this.handleBlockSelect = this.handleBlockSelect.bind(this);
@@ -34,83 +34,77 @@ export default class GameBoard extends Component {
     this.handleInputSelected = this.handleInputSelected.bind(this);
   }
 
-  componentDidMount() { // Create Random Solution
-    let board = [], solution = [], possibleValues = [1, 2, 3, 4, 5, 6, 7, 8, 9], randomBoard;
-    for (let i = 0; i < 9; i++) {
-      board.push(this.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]))
-    }
-    solution = board.slice();
-    this.setState({ solution })
-    let finalSolution = solution.slice();
-    console.log('rows', finalSolution)
-    // Check Columns
-    let temp = [];
-    let col = [];
-    let count = 0;
-    while (count < 9) {
-      temp = [];
-      for (let colIndex = 0; colIndex < finalSolution.length; colIndex++) {
-        temp.push(finalSolution[colIndex][count]);
-      }
-      col.push(temp);
-      count++;
-    }
-    console.log('columns', col);
-    let wholeRow = [];
-    for (let rowIndex = 0; rowIndex < finalSolution.length; rowIndex++) {
-      wholeRow.push(finalSolution[rowIndex]);
-    }
-    if (this.validateSolution(wholeRow)) {
-      this.setState({ entireRows: wholeRow, gameBoard: wholeRow })
-    }
-    this.setState({ entireRows: wholeRow, gameBoard: wholeRow }) // GET RID OF THIS ONCE IT WORKS
+  componentDidMount() {
+    let board = this.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    console.log(board);
+    let solution = this.createSolution(board);
+    console.log('componentDidMount', solution)
+    if (this.state.difficulty = 'easy') this.removeRandomNums(solution, 18);
   }
 
-  validateSolution(solution) {
-    function check(arr) {
-      return arr.sort().filter((val, index) => val === index + 1).length === 9;
+  removeRandomNums(solution, amount) {
+    const { difficulty } = this.state;
+    let gameBoard = JSON.parse(JSON.stringify(solution))
+    console.log(gameBoard)
+    for (let i = 0; i <= amount; i++) {
+      const randomOuterIndex = Math.floor(Math.random() * (9 - 0) + 0);
+      const randomInnerIndex = Math.floor(Math.random() * (9 - 0) + 0);
+      gameBoard[randomOuterIndex].splice(randomInnerIndex, 1, '');
     }
-
-    for (let i = 0; i < 9; i++) {
-      var col = [];
-      var row = [];
-      var square = [];
-      for (var j = 0; j < 9; j++) {
-        col.push(solution[j][i]);
-        row.push(solution[i][j]);
-        square.push(solution[Math.floor(j / 3) + (i % 3) * 3][j % 3 + Math.floor(i / 3) * 3]);
-      }
-      if (!check(col) || !check(row) || !check(square)) {
-        console.log('nope')
-        return false;
-      }
-    }
-    console.log('yay')
-    return true;
+    console.log(gameBoard);
+    this.setState({ gameBoard })
   }
 
-  // permute(values) {
-  //   const result = [];
-  //   const temp = [];
-  //   this.findPermutations(temp, values, result);
-  //   return result;
-  // }
+  createSolution(board) {
+    let gameBoard = [
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+    ];
+    gameBoard.splice(Math.floor(Math.random() * (0 - 9) + 0), 1, board);
+    console.log('gameboard after splice:', gameBoard);
+    sudokuSolver(gameBoard);
+    return gameBoard;
 
-  // findPermutations(temp, values, result) {
-  //   if (!values.length) {
-  //     result.push(temp.concat());
-  //     return;
-  //   }
+    function isValid(board, row, col, k) {
+      // debugger;
+      for (let i = 0; i < 9; i++) {
+        const m = 3 * Math.floor(row / 3) + Math.floor(i / 3);
+        const n = 3 * Math.floor(col / 3) + i % 3;
+        if (board[row][i] == k || board[i][col] == k || board[m][n] == k) {
+          return false;
+        }
+      }
+      return true;
+    }
 
-  //   for (let i = 0; i < values.length; i++) {
-  //     const newVal = values[i];
-  //     temp.push(newVal);
-  //     values.splice(i, 1);
-  //     this.findPermutations(temp, values, result);
-  //     temp.pop();
-  //     values.splice(i, 0, newVal);
-  //   }
-  // }
+    function sudokuSolver(data) {
+      for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+          if (data[i][j] == '') {
+            for (let k = 1; k <= 9; k++) {
+              if (isValid(data, i, j, k)) {
+                data[i][j] = `${k}`;
+                if (sudokuSolver(data)) {
+                  return true;
+                } else {
+                  data[i][j] = '';
+                }
+              }
+            }
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+  }
 
   shuffle(arr) {
     let tmp, current, top = arr.length;
@@ -124,12 +118,12 @@ export default class GameBoard extends Component {
   }
 
   handleBlockSelect(e) {
-    const blockSelection = e.currentTarget.getAttribute('data-block');
-    this.setState({ blockSelection: +blockSelection })
+    const rowSelection = e.currentTarget.getAttribute('data-block');
+    this.setState({ rowSelection: +rowSelection })
   }
 
   handleCellSelect(cellIndex) {
-    this.setState({ cellSelection: +cellIndex }, this.changeSelectionValue)
+    this.setState({ colSelection: +cellIndex }, this.changeSelectionValue)
   }
 
   handleInputSelected(e) {
@@ -146,9 +140,9 @@ export default class GameBoard extends Component {
   }
 
   changeSelectionValue() {
-    const { blockSelection, cellSelection, valueSelected, inputSelected } = this.state;
+    const { rowSelection, colSelection, valueSelected, inputSelected } = this.state;
     const gameBoard = this.state.gameBoard.slice();
-    gameBoard[blockSelection][cellSelection] = valueSelected;
+    gameBoard[rowSelection][colSelection] = valueSelected;
     this.setState(prevState => ({ gameBoard, valueSelected: '' }), () => {
       for (const key in inputSelected) {
         if (inputSelected[key]) this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [key]: false } }))
@@ -167,6 +161,7 @@ export default class GameBoard extends Component {
 
   render() {
     const { gameBoard, inputValues, cellSelected, inputSelected } = this.state;
+    if (gameBoard.length === 0) return <div>LOADING...</div>
     return (
       <>
         <main className="game-container container">
