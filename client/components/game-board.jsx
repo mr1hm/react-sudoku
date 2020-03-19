@@ -7,8 +7,8 @@ export default class GameBoard extends Component {
     super(props);
     this.state = {
       gameBoard: [],
-      cellSelection: null,
-      blockSelection: null,
+      colSelection: null,
+      rowSelection: null,
       valueSelected: '',
       inputValues: [1, 2, 3, 4, 5, 6, 7, 8, 9],
       inputSelected: {
