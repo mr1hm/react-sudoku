@@ -118,12 +118,12 @@ export default class GameBoard extends Component {
   }
 
   handleBlockSelect(e) {
-    const blockSelection = e.currentTarget.getAttribute('data-block');
-    this.setState({ blockSelection: +blockSelection })
+    const rowSelection = e.currentTarget.getAttribute('data-block');
+    this.setState({ rowSelection: +rowSelection })
   }
 
   handleCellSelect(cellIndex) {
-    this.setState({ cellSelection: +cellIndex }, this.changeSelectionValue)
+    this.setState({ colSelection: +cellIndex }, this.changeSelectionValue)
   }
 
   handleInputSelected(e) {
