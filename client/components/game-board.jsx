@@ -23,8 +23,8 @@ export default class GameBoard extends Component {
         9: false
       },
       solution: [],
-      entireRows: [],
-      condensed: [],
+      difficulty: 'easy',
+      win: false,
     }
     this.handleCellSelect = this.handleCellSelect.bind(this);
     this.handleBlockSelect = this.handleBlockSelect.bind(this);
