@@ -110,16 +110,16 @@ export default class GameBoard extends Component {
     }
 
     function sudokuSolver(data) {
-      for (let i = 0; i < 9; i++) {
-        for (let j = 0; j < 9; j++) {
-          if (data[i][j] == '') {
+      for (let row = 0; row < 9; row++) {
+        for (let col = 0; col < 9; col++) {
+          if (data[row][col] == '') {
             for (let k = 1; k <= 9; k++) {
-              if (isValid(data, i, j, k)) {
-                data[i][j] = `${k}`;
+              if (isValid(data, row, col, k)) {
+                data[row][col] = `${k}`;
                 if (sudokuSolver(data)) {
                   return true;
                 } else {
-                  data[i][j] = '';
+                  data[row][col] = '';
                 }
               }
             }
