@@ -191,35 +191,70 @@ export default class GameBoard extends Component {
     else this.setState({ valueSelected: value })
   }
 
+  handleRowAndColIsDifferent(boolean) {
+    this.setState({ rowAndColIsDifferent: boolean })
+  }
+
   clearValueSelected() {
     this.setState({ valueSelected: '' });
   }
 
   render() {
-    const { gameBoard, inputValues, cellSelected, inputSelected } = this.state;
+    const { gameBoard, inputValues, colSelection, rowSelection, inputSelected, cellClicked, highlight, rowAndColIsDifferent } = this.state;
     if (gameBoard.length === 0) return <div>LOADING...</div>
     return (
       <>
-        <main className="game-containers container">
+        <main className="game-container container-fluid">
           <section className="game-board row">
-            {gameBoard.map((val, blockIndex) => {
-              return (
-                <div onClick={this.handleBlockSelect} data-block={blockIndex} id={`block-${blockIndex}`} key={blockIndex} className="game-block col-12">
-                  <div className="row board-row">
-                    {val.map((num, cellIndex) => {
-                      return (
-                        <GameBoardCells key={`b${blockIndex}-c${cellIndex}`} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
-                      );
-                    })}
+            {gameBoard.map((val, rowIndex) => {
+              if (cellClicked) {
+                if (rowIndex === rowSelection) {
+                  console.log('rowIndex matched rowSelection');
+                  return (
+                    <div onClick={this.handleBlockSelect} data-block={rowIndex} id={`block-${rowIndex}`} key={rowIndex} className={`game-block selected col-12`}>
+                      <div className={`row board-row`}>
+                        {val.map((num, cellIndex) => {
+                          return (
+                            <GameBoardCells key={`b${rowIndex}-c${cellIndex}`} rowAndColIsDifferent={rowAndColIsDifferent} rowIndex={rowIndex} rowSelection={rowSelection} colSelection={colSelection} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div onClick={this.handleBlockSelect} data-block={rowIndex} id={`block-${rowIndex}`} key={rowIndex} className={`game-block col-12`}>
+                      <div className={`row board-row`}>
+                        {val.map((num, cellIndex) => {
+                          return (
+                            <GameBoardCells key={`b${rowIndex}-c${cellIndex}`} rowAndColIsDifferent={rowAndColIsDifferent} rowSelection={rowSelection} colSelection={colSelection} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                }
+              } else {
+                return (
+                  <div onClick={this.handleBlockSelect} data-block={rowIndex} id={`block-${rowIndex}`} key={rowIndex} className="game-block col-12">
+                    <div className={`row board-row`}>
+                      {val.map((num, cellIndex) => {
+                        return (
+                          <GameBoardCells key={`b${rowIndex}-c${cellIndex}`} rowAndColIsDifferent={rowAndColIsDifferent} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
+                );
+              }
             })}
           </section>
+        </main>
+        <main className="input-container container-fluid">
           <section className="input-values row">
             {inputValues.map((val, i) => {
               return (
-                <InputSelection key={i + 1} inputSelected={inputSelected} handleInputSelected={this.handleInputSelected} clearValueSelected={this.clearValueSelected} handleValueSelection={this.handleValueSelection} value={val} />
+                <InputSelection key={i + 1} inputSelected={inputSelected} rowAndColIsDifferent={rowAndColIsDifferent} handleInputSelected={this.handleInputSelected} clearValueSelected={this.clearValueSelected} handleValueSelection={this.handleValueSelection} value={val} />
               );
             })}
           </section>
