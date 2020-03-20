@@ -169,7 +169,6 @@ export default class GameBoard extends Component {
   }
 
   changeSelectionValue() {
-
     const { rowSelection, colSelection, valueSelected, inputSelected } = this.state;
     const gameBoard = this.state.gameBoard.slice();
     if (valueSelected === '') return;
