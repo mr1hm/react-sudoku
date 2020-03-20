@@ -74,6 +74,13 @@ export default class GameBoard extends Component {
     this.setState({ gameBoard })
   }
 
+  validateValueInsert() {
+    const { solution, gameBoard, rowSelection, colSelection } = this.state;
+    if (solution[rowSelection][colSelection] === gameBoard[rowSelection][colSelection]) {
+      this.setState({ colSelection: null, rowSelection: null, valueSelected: '' })
+    }
+  }
+
   createSolution(shuffledRow) {
     let gameBoard = [
       ['', '', '', '', '', '', '', '', ''],
