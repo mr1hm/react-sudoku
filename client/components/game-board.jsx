@@ -35,14 +35,20 @@ export default class GameBoard extends Component {
     this.handleValueSelection = this.handleValueSelection.bind(this);
     this.clearValueSelected = this.clearValueSelected.bind(this);
     this.handleInputSelected = this.handleInputSelected.bind(this);
+    this.handleRowAndColIsDifferent = this.handleRowAndColIsDifferent.bind(this);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.colSelection === null || prevState.rowSelection === null) return;
+    if (prevState.colSelection !== this.state.colSelection || prevState.rowSelection !== this.state.rowSelection) this.setState({ rowAndColIsDifferent: true })
   }
 
   componentDidMount() {
-    let board = this.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    let board = this.shuffle(['1', '2', '3', '4', '5', '6', '7', '8', '9']);
     console.log(board);
     let solution = this.createSolution(board);
     console.log('componentDidMount', solution)
-    if (this.state.difficulty = 'easy') this.removeRandomNums(solution, 18);
+    if (this.state.difficulty = 'easy') this.removeRandomNums(solution, 27);
   }
 
   shuffle(arr) {
