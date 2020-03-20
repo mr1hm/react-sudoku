@@ -65,7 +65,6 @@ export default class GameBoard extends Component {
   removeRandomNums(solution, amount) {
     const { difficulty } = this.state;
     let gameBoard = JSON.parse(JSON.stringify(solution))
-    console.log(gameBoard)
     for (let i = 0; i <= amount; i++) {
       const randomOuterIndex = Math.floor(Math.random() * (9 - 0) + 0);
       const randomInnerIndex = Math.floor(Math.random() * (9 - 0) + 0);
