@@ -7,8 +7,10 @@ export default class GameBoard extends Component {
     super(props);
     this.state = {
       gameBoard: [],
+      cellClicked: false,
       colSelection: null,
       rowSelection: null,
+      rowAndColIsDifferent: false,
       valueSelected: '',
       inputValues: [1, 2, 3, 4, 5, 6, 7, 8, 9],
       inputSelected: {
@@ -25,6 +27,7 @@ export default class GameBoard extends Component {
       solution: [],
       difficulty: 'easy',
       win: false,
+      eraser: false,
     }
     this.handleCellSelect = this.handleCellSelect.bind(this);
     this.handleBlockSelect = this.handleBlockSelect.bind(this);
