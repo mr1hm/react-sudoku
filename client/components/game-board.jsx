@@ -77,7 +77,10 @@ export default class GameBoard extends Component {
   validateValueInsert() {
     const { solution, gameBoard, rowSelection, colSelection } = this.state;
     if (solution[rowSelection][colSelection] === gameBoard[rowSelection][colSelection]) {
+      console.log('correct');
       this.setState({ colSelection: null, rowSelection: null, valueSelected: '' })
+    } else {
+      console.log('incorrect');
     }
   }
 
