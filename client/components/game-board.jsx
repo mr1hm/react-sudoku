@@ -94,8 +94,8 @@ export default class GameBoard extends Component {
       ['', '', '', '', '', '', '', '', ''],
     ];
     gameBoard.splice(Math.floor(Math.random() * (0 - 9) + 0), 1, shuffledRow);
-    console.log('gameboard after splice:', gameBoard);
     sudokuSolver(gameBoard);
+    this.setState({ solution: gameBoard })
     return gameBoard;
 
     function isValid(board, row, col, k) {
