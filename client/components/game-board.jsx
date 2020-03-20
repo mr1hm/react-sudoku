@@ -139,16 +139,11 @@ export default class GameBoard extends Component {
     let gameBoardCopy = gameBoard.slice(), correctCount = 0;
     for (let i = 0; i < gameBoardCopy.length; i++) {
       for (let z = 0; z < gameBoardCopy[i].length; z++) {
-        if (gameBoardCopy[i][z] === solution[i][z]) {
-          console.log('correct')
-          correctCount++;
-        } else {
-          console.log('incorrect')
-          return false;
-        }
+        if (gameBoardCopy[i][z] === solution[i][z]) correctCount++;
       }
     }
     if (correctCount === 81) return true;
+    else return false;
   }
 
   handleBlockSelect(e) {
