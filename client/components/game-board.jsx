@@ -131,13 +131,28 @@ export default class GameBoard extends Component {
     }
   }
 
+  isValidSolution() {
+    const { gameBoard, solution } = this.state;
+    let gameBoardCopy = gameBoard.slice(), correctCount = 0;
+    for (let i = 0; i < gameBoardCopy.length; i++) {
+      for (let z = 0; z < gameBoardCopy[i].length; z++) {
+        if (gameBoardCopy[i][z] === solution[i][z]) {
+          console.log('correct')
+          correctCount++;
+        }
+        else return false;
+      }
+    }
+    if (correctCount === 81) return true;
+  }
+
   handleBlockSelect(e) {
     const rowSelection = e.currentTarget.getAttribute('data-block');
     this.setState({ rowSelection: +rowSelection })
   }
 
   handleCellSelect(cellIndex) {
-    this.setState({ colSelection: +cellIndex }, this.changeSelectionValue)
+    this.setState({ cellClicked: !this.state.cellClicked, colSelection: +cellIndex }, this.changeSelectionValue)
   }
 
   handleInputSelected(e) {
