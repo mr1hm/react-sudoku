@@ -45,6 +45,7 @@ body {
 .cell {
   border-right: 1px solid black;
   height: 60px;
+  font-size: 20px;
 }
 
 #cell-2,
@@ -53,7 +54,11 @@ body {
 }
 
 .selected {
-  background-color: rgba(141, 197, 243, 0.6);
+  background-color: rgba(141, 197, 243, 0.4);
+}
+
+.main-selection {
+  background-color: rgba(141, 197, 243, 0.8);
 }
 
 .value {

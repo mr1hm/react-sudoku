@@ -7,8 +7,10 @@ export default class GameBoard extends Component {
     super(props);
     this.state = {
       gameBoard: [],
+      cellClicked: false,
       colSelection: null,
       rowSelection: null,
+      rowAndColIsDifferent: false,
       valueSelected: '',
       inputValues: [1, 2, 3, 4, 5, 6, 7, 8, 9],
       inputSelected: {
@@ -25,6 +27,7 @@ export default class GameBoard extends Component {
       solution: [],
       difficulty: 'easy',
       win: false,
+      eraser: false,
     }
     this.handleCellSelect = this.handleCellSelect.bind(this);
     this.handleBlockSelect = this.handleBlockSelect.bind(this);
@@ -32,14 +35,20 @@ export default class GameBoard extends Component {
     this.handleValueSelection = this.handleValueSelection.bind(this);
     this.clearValueSelected = this.clearValueSelected.bind(this);
     this.handleInputSelected = this.handleInputSelected.bind(this);
+    this.handleRowAndColIsDifferent = this.handleRowAndColIsDifferent.bind(this);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.colSelection === null || prevState.rowSelection === null) return;
+    if (prevState.colSelection !== this.state.colSelection || prevState.rowSelection !== this.state.rowSelection) this.setState({ rowAndColIsDifferent: true })
   }
 
   componentDidMount() {
-    let board = this.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    let board = this.shuffle(['1', '2', '3', '4', '5', '6', '7', '8', '9']);
     console.log(board);
     let solution = this.createSolution(board);
     console.log('componentDidMount', solution)
-    if (this.state.difficulty = 'easy') this.removeRandomNums(solution, 18);
+    if (this.state.difficulty = 'easy') this.removeRandomNums(solution, 27);
   }
 
   shuffle(arr) {
@@ -56,7 +65,6 @@ export default class GameBoard extends Component {
   removeRandomNums(solution, amount) {
     const { difficulty } = this.state;
     let gameBoard = JSON.parse(JSON.stringify(solution))
-    console.log(gameBoard)
     for (let i = 0; i <= amount; i++) {
       const randomOuterIndex = Math.floor(Math.random() * (9 - 0) + 0);
       const randomInnerIndex = Math.floor(Math.random() * (9 - 0) + 0);
@@ -64,6 +72,13 @@ export default class GameBoard extends Component {
     }
     console.log(gameBoard);
     this.setState({ gameBoard })
+  }
+
+  validateValueInsert() {
+    const { solution, gameBoard, rowSelection, colSelection } = this.state;
+    if (solution[rowSelection][colSelection] === gameBoard[rowSelection][colSelection]) {
+      this.setState({ colSelection: null, rowSelection: null, valueSelected: '' })
+    }
   }
 
   createSolution(shuffledRow) {
@@ -79,8 +94,8 @@ export default class GameBoard extends Component {
       ['', '', '', '', '', '', '', '', ''],
     ];
     gameBoard.splice(Math.floor(Math.random() * (0 - 9) + 0), 1, shuffledRow);
-    console.log('gameboard after splice:', gameBoard);
     sudokuSolver(gameBoard);
+    this.setState({ solution: gameBoard })
     return gameBoard;
 
     function isValid(board, row, col, k) {
@@ -95,16 +110,16 @@ export default class GameBoard extends Component {
     }
 
     function sudokuSolver(data) {
-      for (let i = 0; i < 9; i++) {
-        for (let j = 0; j < 9; j++) {
-          if (data[i][j] == '') {
+      for (let row = 0; row < 9; row++) {
+        for (let col = 0; col < 9; col++) {
+          if (data[row][col] == '') {
             for (let k = 1; k <= 9; k++) {
-              if (isValid(data, i, j, k)) {
-                data[i][j] = `${k}`;
+              if (isValid(data, row, col, k)) {
+                data[row][col] = `${k}`;
                 if (sudokuSolver(data)) {
                   return true;
                 } else {
-                  data[i][j] = '';
+                  data[row][col] = '';
                 }
               }
             }
@@ -116,13 +131,28 @@ export default class GameBoard extends Component {
     }
   }
 
+  isValidSolution() {
+    const { gameBoard, solution } = this.state;
+    let gameBoardCopy = gameBoard.slice(), correctCount = 0;
+    for (let i = 0; i < gameBoardCopy.length; i++) {
+      for (let z = 0; z < gameBoardCopy[i].length; z++) {
+        if (gameBoardCopy[i][z] === solution[i][z]) {
+          console.log('correct')
+          correctCount++;
+        }
+        else return false;
+      }
+    }
+    if (correctCount === 81) return true;
+  }
+
   handleBlockSelect(e) {
     const rowSelection = e.currentTarget.getAttribute('data-block');
     this.setState({ rowSelection: +rowSelection })
   }
 
   handleCellSelect(cellIndex) {
-    this.setState({ colSelection: +cellIndex }, this.changeSelectionValue)
+    this.setState({ cellClicked: !this.state.cellClicked, colSelection: +cellIndex }, this.changeSelectionValue)
   }
 
   handleInputSelected(e) {
@@ -139,12 +169,19 @@ export default class GameBoard extends Component {
   }
 
   changeSelectionValue() {
+
     const { rowSelection, colSelection, valueSelected, inputSelected } = this.state;
     const gameBoard = this.state.gameBoard.slice();
-    gameBoard[rowSelection][colSelection] = valueSelected;
+    if (valueSelected === '') return;
+    if (gameBoard[rowSelection][colSelection] === '') gameBoard[rowSelection][colSelection] = valueSelected;
     this.setState(prevState => ({ gameBoard, valueSelected: '' }), () => {
-      for (const key in inputSelected) {
-        if (inputSelected[key]) this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [key]: false } }))
+      if (!this.isValidSolution()) {
+        this.validateValueInsert();
+        for (const key in inputSelected) {
+          if (inputSelected[key]) this.setState(prevState => ({ inputSelected: { ...prevState.inputSelected, [key]: false } }))
+        }
+      } else {
+        console.log('you won');
       }
     })
   }
@@ -154,35 +191,70 @@ export default class GameBoard extends Component {
     else this.setState({ valueSelected: value })
   }
 
+  handleRowAndColIsDifferent(boolean) {
+    this.setState({ rowAndColIsDifferent: boolean })
+  }
+
   clearValueSelected() {
     this.setState({ valueSelected: '' });
   }
 
   render() {
-    const { gameBoard, inputValues, cellSelected, inputSelected } = this.state;
+    const { gameBoard, inputValues, colSelection, rowSelection, inputSelected, cellClicked, highlight, rowAndColIsDifferent } = this.state;
     if (gameBoard.length === 0) return <div>LOADING...</div>
     return (
       <>
-        <main className="game-containers container">
+        <main className="game-container container-fluid">
           <section className="game-board row">
-            {gameBoard.map((val, blockIndex) => {
-              return (
-                <div onClick={this.handleBlockSelect} data-block={blockIndex} id={`block-${blockIndex}`} key={blockIndex} className="game-block col-12">
-                  <div className="row board-row">
-                    {val.map((num, cellIndex) => {
-                      return (
-                        <GameBoardCells key={`b${blockIndex}-c${cellIndex}`} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
-                      );
-                    })}
+            {gameBoard.map((val, rowIndex) => {
+              if (cellClicked) {
+                if (rowIndex === rowSelection) {
+                  console.log('rowIndex matched rowSelection');
+                  return (
+                    <div onClick={this.handleBlockSelect} data-block={rowIndex} id={`block-${rowIndex}`} key={rowIndex} className={`game-block selected col-12`}>
+                      <div className={`row board-row`}>
+                        {val.map((num, cellIndex) => {
+                          return (
+                            <GameBoardCells key={`b${rowIndex}-c${cellIndex}`} rowAndColIsDifferent={rowAndColIsDifferent} rowIndex={rowIndex} rowSelection={rowSelection} colSelection={colSelection} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div onClick={this.handleBlockSelect} data-block={rowIndex} id={`block-${rowIndex}`} key={rowIndex} className={`game-block col-12`}>
+                      <div className={`row board-row`}>
+                        {val.map((num, cellIndex) => {
+                          return (
+                            <GameBoardCells key={`b${rowIndex}-c${cellIndex}`} rowAndColIsDifferent={rowAndColIsDifferent} rowSelection={rowSelection} colSelection={colSelection} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                }
+              } else {
+                return (
+                  <div onClick={this.handleBlockSelect} data-block={rowIndex} id={`block-${rowIndex}`} key={rowIndex} className="game-block col-12">
+                    <div className={`row board-row`}>
+                      {val.map((num, cellIndex) => {
+                        return (
+                          <GameBoardCells key={`b${rowIndex}-c${cellIndex}`} rowAndColIsDifferent={rowAndColIsDifferent} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
+                );
+              }
             })}
           </section>
+        </main>
+        <main className="input-container container-fluid">
           <section className="input-values row">
             {inputValues.map((val, i) => {
               return (
-                <InputSelection key={i + 1} inputSelected={inputSelected} handleInputSelected={this.handleInputSelected} clearValueSelected={this.clearValueSelected} handleValueSelection={this.handleValueSelection} value={val} />
+                <InputSelection key={i + 1} inputSelected={inputSelected} rowAndColIsDifferent={rowAndColIsDifferent} handleInputSelected={this.handleInputSelected} clearValueSelected={this.clearValueSelected} handleValueSelection={this.handleValueSelection} value={val} />
               );
             })}
           </section>
