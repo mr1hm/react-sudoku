@@ -139,8 +139,10 @@ export default class GameBoard extends Component {
         if (gameBoardCopy[i][z] === solution[i][z]) {
           console.log('correct')
           correctCount++;
+        } else {
+          console.log('incorrect')
+          return false;
         }
-        else return false;
       }
     }
     if (correctCount === 81) return true;
