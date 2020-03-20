@@ -48,7 +48,7 @@ export default class GameBoard extends Component {
     console.log(board);
     let solution = this.createSolution(board);
     console.log('componentDidMount', solution)
-    if (this.state.difficulty = 'easy') this.removeRandomNums(solution, 27);
+    if (this.state.difficulty = 'easy') this.removeRandomNums(solution, 63);
   }
 
   shuffle(arr) {
@@ -139,8 +139,10 @@ export default class GameBoard extends Component {
         if (gameBoardCopy[i][z] === solution[i][z]) {
           console.log('correct')
           correctCount++;
+        } else {
+          console.log('incorrect')
+          return false;
         }
-        else return false;
       }
     }
     if (correctCount === 81) return true;
