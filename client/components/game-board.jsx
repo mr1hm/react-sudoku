@@ -40,7 +40,10 @@ export default class GameBoard extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.colSelection === null || prevState.rowSelection === null) return;
-    if (prevState.colSelection !== this.state.colSelection || prevState.rowSelection !== this.state.rowSelection) this.setState({ rowAndColIsDifferent: true })
+    if (prevState.colSelection !== this.state.colSelection || prevState.rowSelection !== this.state.rowSelection) {
+      this.setState({ rowAndColIsDifferent: true })
+      setTimeout(() => this.setState({ rowAndColIsDifferent: false }), 1000)
+    }
   }
 
   componentDidMount() {
