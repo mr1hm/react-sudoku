@@ -27,13 +27,15 @@ export default class GameBoardCells extends Component {
     } else {
       if (num === '') {
         return (
-          <div onClick={this.handleCellClick} id={`cell-${cellIndex}`} className={`cell col d-flex justify-content-center align-items-center ${cellSelected ? 'selected' : ''}`}>{num}</div>
+          <div onClick={this.handleCellClick} id={`cell-${cellIndex}`} className={`cell col d-flex justify-content-center align-items-center `}>{num}</div>
         );
       } else {
         return (
-          <div onClick={this.handleCellClick} id={`cell-${cellIndex}`} className={`cell col d-flex justify-content-center align-items-center ${cellSelected ? 'selected' : ''}`}>{num}</div>
+          <div onClick={this.handleCellClick} id={`cell-${cellIndex}`} className={`cell col d-flex justify-content-center align-items-center `}>{num}</div>
         );
       }
     }
   }
 }
+
+// ${cellSelected ? 'selected' : ''}

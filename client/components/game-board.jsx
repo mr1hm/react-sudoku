@@ -40,7 +40,10 @@ export default class GameBoard extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.colSelection === null || prevState.rowSelection === null) return;
-    if (prevState.colSelection !== this.state.colSelection || prevState.rowSelection !== this.state.rowSelection) this.setState({ rowAndColIsDifferent: true })
+    if (prevState.colSelection !== this.state.colSelection || prevState.rowSelection !== this.state.rowSelection) {
+      this.setState({ rowAndColIsDifferent: true })
+      setTimeout(() => this.setState({ rowAndColIsDifferent: false }), 1000)
+    }
   }
 
   componentDidMount() {
@@ -48,7 +51,7 @@ export default class GameBoard extends Component {
     console.log(board);
     let solution = this.createSolution(board);
     console.log('componentDidMount', solution)
-    if (this.state.difficulty = 'easy') this.removeRandomNums(solution, 63);
+    if (this.state.difficulty = 'easy') this.removeRandomNums(solution, 45);
   }
 
   shuffle(arr) {
@@ -62,22 +65,60 @@ export default class GameBoard extends Component {
     return arr;
   }
 
+  *combine(array, length) {
+    if (length < 1) yield [];
+    else for (let element of array) {
+      for (let combination of this.combine(array, length - 1)) {
+        yield combination.concat(element);
+      }
+    }
+  }
+
+  // randomPermute() {
+  //   let a = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8];
+
+  //   function* combine(array, length) {
+  //     if (length < 1) yield [];
+  //     else for (let element of array) {
+  //       for (let combination of combine(array, length - 1)) {
+  //         yield combination.concat(element);
+  //       }
+  //     }
+  //   }
+  //   console.log([...combine(a, 2)]);
+  // }
+
   removeRandomNums(solution, amount) {
     const { difficulty } = this.state;
-    let gameBoard = JSON.parse(JSON.stringify(solution))
-    for (let i = 0; i <= amount; i++) {
-      const randomOuterIndex = Math.floor(Math.random() * (9 - 0) + 0);
-      const randomInnerIndex = Math.floor(Math.random() * (9 - 0) + 0);
-      gameBoard[randomOuterIndex].splice(randomInnerIndex, 1, '');
+    let gameBoard = JSON.parse(JSON.stringify(solution)),
+      possibleOuterIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      possibleInnerIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    let randomPermute = [...this.combine([0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8], 2)];
+    console.log(randomPermute);
+    for (let j = 0; j < randomPermute.length; j++) {
+      // if (randomPermute[j].every(val => val[0] === randomPermute[j + 1][0] || val[1] === randomPermute[j + 1][1])) {
+      //   console.log('true');
+      // }
+      randomPermute.splice(j + 1, 1);
     }
-    console.log(gameBoard);
+    console.log(randomPermute)
+    for (let z = 0; z < amount; z++) {
+      const randomIndex = Math.floor(Math.random() * (9 - 0) + 0);
+      const randomPermutatedIndexValue = Math.floor(Math.random() * randomPermute.length);
+      gameBoard[randomPermute[randomPermutatedIndexValue][0]][randomPermute[randomPermutatedIndexValue][1]] = '';
+      randomPermute.splice(randomPermutatedIndexValue, 1);
+    }
+    console.log(randomPermute);
     this.setState({ gameBoard })
   }
 
   validateValueInsert() {
     const { solution, gameBoard, rowSelection, colSelection } = this.state;
     if (solution[rowSelection][colSelection] === gameBoard[rowSelection][colSelection]) {
+      console.log('correct');
       this.setState({ colSelection: null, rowSelection: null, valueSelected: '' })
+    } else {
+      console.log('incorrect');
     }
   }
 
@@ -93,33 +134,33 @@ export default class GameBoard extends Component {
       ['', '', '', '', '', '', '', '', ''],
       ['', '', '', '', '', '', '', '', ''],
     ];
-    gameBoard.splice(Math.floor(Math.random() * (0 - 9) + 0), 1, shuffledRow);
+    gameBoard.splice(Math.floor(Math.random() * 9), 1, shuffledRow);
     sudokuSolver(gameBoard);
     this.setState({ solution: gameBoard })
     return gameBoard;
 
-    function isValid(board, row, col, k) {
+    function isValid(board, row, col, value) {
       for (let i = 0; i < 9; i++) {
         const m = 3 * Math.floor(row / 3) + Math.floor(i / 3);
         const n = 3 * Math.floor(col / 3) + i % 3;
-        if (board[row][i] == k || board[i][col] == k || board[m][n] == k) {
+        if (board[row][i] == value || board[i][col] == value || board[m][n] == value) {
           return false;
         }
       }
       return true;
     }
 
-    function sudokuSolver(data) {
+    function sudokuSolver(randomBoard) {
       for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
-          if (data[row][col] == '') {
-            for (let k = 1; k <= 9; k++) {
-              if (isValid(data, row, col, k)) {
-                data[row][col] = `${k}`;
-                if (sudokuSolver(data)) {
+          if (randomBoard[row][col] == '') {
+            for (let value = 1; value <= 9; value++) {
+              if (isValid(randomBoard, row, col, value)) {
+                randomBoard[row][col] = `${value}`;
+                if (sudokuSolver(randomBoard)) {
                   return true;
                 } else {
-                  data[row][col] = '';
+                  randomBoard[row][col] = '';
                 }
               }
             }
@@ -136,16 +177,11 @@ export default class GameBoard extends Component {
     let gameBoardCopy = gameBoard.slice(), correctCount = 0;
     for (let i = 0; i < gameBoardCopy.length; i++) {
       for (let z = 0; z < gameBoardCopy[i].length; z++) {
-        if (gameBoardCopy[i][z] === solution[i][z]) {
-          console.log('correct')
-          correctCount++;
-        } else {
-          console.log('incorrect')
-          return false;
-        }
+        if (gameBoardCopy[i][z] === solution[i][z]) correctCount++;
       }
     }
     if (correctCount === 81) return true;
+    else return false;
   }
 
   handleBlockSelect(e) {
@@ -171,7 +207,6 @@ export default class GameBoard extends Component {
   }
 
   changeSelectionValue() {
-
     const { rowSelection, colSelection, valueSelected, inputSelected } = this.state;
     const gameBoard = this.state.gameBoard.slice();
     if (valueSelected === '') return;
