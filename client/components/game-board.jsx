@@ -65,15 +65,50 @@ export default class GameBoard extends Component {
     return arr;
   }
 
+  *combine(array, length) {
+    if (length < 1) yield [];
+    else for (let element of array) {
+      for (let combination of this.combine(array, length - 1)) {
+        yield combination.concat(element);
+      }
+    }
+  }
+
+  // randomPermute() {
+  //   let a = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8];
+
+  //   function* combine(array, length) {
+  //     if (length < 1) yield [];
+  //     else for (let element of array) {
+  //       for (let combination of combine(array, length - 1)) {
+  //         yield combination.concat(element);
+  //       }
+  //     }
+  //   }
+  //   console.log([...combine(a, 2)]);
+  // }
+
   removeRandomNums(solution, amount) {
     const { difficulty } = this.state;
-    let gameBoard = JSON.parse(JSON.stringify(solution))
-    for (let i = 0; i <= amount; i++) {
-      const randomOuterIndex = Math.floor(Math.random() * (9 - 0) + 0);
-      const randomInnerIndex = Math.floor(Math.random() * (9 - 0) + 0);
-      gameBoard[randomOuterIndex].splice(randomInnerIndex, 1, '');
+    let gameBoard = JSON.parse(JSON.stringify(solution)),
+      possibleOuterIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      possibleInnerIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    let randomPermute = [...this.combine([0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8], 2)];
+    console.log(randomPermute);
+    for (let j = 0; j < randomPermute.length; j++) {
+      // if (randomPermute[j].every(val => val[0] === randomPermute[j + 1][0] || val[1] === randomPermute[j + 1][1])) {
+      //   console.log('true');
+      // }
+      randomPermute.splice(j + 1, 1);
     }
-    console.log(gameBoard);
+    console.log(randomPermute)
+    for (let z = 0; z < amount; z++) {
+      const randomIndex = Math.floor(Math.random() * (9 - 0) + 0);
+      const randomPermutatedIndexValue = Math.floor(Math.random() * randomPermute.length);
+      gameBoard[randomPermute[randomPermutatedIndexValue][0]][randomPermute[randomPermutatedIndexValue][1]] = '';
+      randomPermute.splice(randomPermutatedIndexValue, 1);
+    }
+    console.log(randomPermute);
     this.setState({ gameBoard })
   }
 
