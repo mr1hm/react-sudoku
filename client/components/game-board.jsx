@@ -134,7 +134,7 @@ export default class GameBoard extends Component {
       ['', '', '', '', '', '', '', '', ''],
       ['', '', '', '', '', '', '', '', ''],
     ];
-    gameBoard.splice(Math.floor(Math.random() * (0 - 9) + 0), 1, shuffledRow);
+    gameBoard.splice(Math.floor(Math.random() * 9), 1, shuffledRow);
     sudokuSolver(gameBoard);
     this.setState({ solution: gameBoard })
     return gameBoard;
