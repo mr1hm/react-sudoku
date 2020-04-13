@@ -238,7 +238,7 @@ export default class GameBoard extends Component {
   }
 
   render() {
-    const { gameBoard, inputValues, colSelection, rowSelection, inputSelected, cellClicked, highlight, rowAndColIsDifferent } = this.state;
+    const { gameBoard, inputValues, colSelection, rowSelection, inputSelected, cellClicked, highlight, rowAndColIsDifferent, incorrect } = this.state;
     if (gameBoard.length === 0) return <div>LOADING...</div>
     return (
       <>
@@ -253,7 +253,7 @@ export default class GameBoard extends Component {
                       <div className={`row board-row`}>
                         {val.map((num, cellIndex) => {
                           return (
-                            <GameBoardCells key={`b${rowIndex}-c${cellIndex}`} rowAndColIsDifferent={rowAndColIsDifferent} rowIndex={rowIndex} rowSelection={rowSelection} colSelection={colSelection} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
+                            <GameBoardCells key={`b${rowIndex}-c${cellIndex}`} incorrect={incorrect} rowAndColIsDifferent={rowAndColIsDifferent} rowIndex={rowIndex} rowSelection={rowSelection} colSelection={colSelection} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
                           );
                         })}
                       </div>
