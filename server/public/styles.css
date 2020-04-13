@@ -68,3 +68,7 @@ body {
   border: 1px solid black;
   cursor: pointer;
 }
+
+.cell-last {
+  border-right: none;
+}

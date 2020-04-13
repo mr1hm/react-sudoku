@@ -24,6 +24,8 @@ export default class GameBoard extends Component {
         8: false,
         9: false
       },
+      incorrect: false,
+      correct: false,
       solution: [],
       difficulty: 'easy',
       win: false,
@@ -114,9 +116,10 @@ export default class GameBoard extends Component {
     const { solution, gameBoard, rowSelection, colSelection } = this.state;
     if (solution[rowSelection][colSelection] === gameBoard[rowSelection][colSelection]) {
       console.log('correct');
-      this.setState({ colSelection: null, rowSelection: null, valueSelected: '' })
+      this.setState({ colSelection: null, rowSelection: null, valueSelected: '', incorrect: false, correct: true })
     } else {
       console.log('incorrect');
+      this.setState({ incorrect: true, correct: false });
     }
   }
 
@@ -262,7 +265,7 @@ export default class GameBoard extends Component {
                       <div className={`row board-row`}>
                         {val.map((num, cellIndex) => {
                           return (
-                            <GameBoardCells key={`b${rowIndex}-c${cellIndex}`} rowAndColIsDifferent={rowAndColIsDifferent} rowSelection={rowSelection} colSelection={colSelection} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
+                            <GameBoardCells gameBoard={gameBoard} key={`b${rowIndex}-c${cellIndex}`} rowAndColIsDifferent={rowAndColIsDifferent} rowSelection={rowSelection} colSelection={colSelection} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
                           );
                         })}
                       </div>
@@ -274,6 +277,11 @@ export default class GameBoard extends Component {
                   <div onClick={this.handleBlockSelect} data-block={rowIndex} id={`block-${rowIndex}`} key={rowIndex} className="game-block col-12">
                     <div className={`row board-row`}>
                       {val.map((num, cellIndex) => {
+                        if (cellIndex === gameBoard[rowIndex].length - 1) {
+                          return (
+                            <GameBoardCells key={`b${rowIndex}-c${cellIndex}`} rowAndColIsDifferent={rowAndColIsDifferent} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
+                          );
+                        }
                         return (
                           <GameBoardCells key={`b${rowIndex}-c${cellIndex}`} rowAndColIsDifferent={rowAndColIsDifferent} handleCellSelect={this.handleCellSelect} cellIndex={cellIndex} num={num} />
                         );
