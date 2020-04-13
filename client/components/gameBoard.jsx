@@ -10,7 +10,7 @@ export default class GameBoard extends Component {
       colSelection: null,
       rowSelection: null,
       valueSelected: '',
-      inputValues: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      inputValues: [1, 2, 3, 4, 5, 6, 7, 8, 9, 'eraser', 'undo', ''],
       inputSelected: {
         1: false,
         2: false,

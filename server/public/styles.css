@@ -68,3 +68,15 @@ body {
   border: 1px solid black;
   cursor: pointer;
 }
+
+.cell-last {
+  border-right: none;
+}
+
+.incorrect {
+  background-color: rgba(243, 21, 21, 0.8);
+}
+
+.correct {
+  border-color: rgba(95, 248, 90, 0.8);
+}

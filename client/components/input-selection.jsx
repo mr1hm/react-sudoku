@@ -13,7 +13,7 @@ export default class InputSelection extends Component {
     return (
       <>
         <div onClick={(e) => handleInputSelected(e)} data-cell={value} className={`${inputSelected[value] ? 'selected' : ''} value col-4 d-flex justify-content-center align-items-center`}>{value}</div>
-        <div className="eraser"><i class="fas fa-eraser"></i></div>
+        {/* <div className="eraser"><i class="fas fa-eraser"></i></div> */}
       </>
     );
   }

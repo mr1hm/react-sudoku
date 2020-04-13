@@ -14,7 +14,7 @@ export default class GameBoardCells extends Component {
   }
 
   render() {
-    const { cellIndex, rowIndex, num, highlight, handleCellSelect, colSelection, rowSelection, rowAndColIsDifferent } = this.props, { cellSelected } = this.state;
+    const { cellIndex, rowIndex, num, highlight, handleCellSelect, colSelection, rowSelection, rowAndColIsDifferent, gameBoard, incorrect, correct } = this.props, { cellSelected } = this.state;
     if ((cellIndex === colSelection) && (rowIndex === rowSelection)) {
       return (
         <div onClick={this.handleCellClick} id={`cell-${cellIndex}`} className={`cell col d-flex justify-content-center align-items-center main-selection`}>{num}</div>
